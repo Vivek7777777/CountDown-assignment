@@ -4,60 +4,56 @@ import Countdown from 'react-countdown'
 function App() {
   const [count, setCount] = useState(0);
   const [play, setPlay] = useState(false);
-  const [playPause, setPlayPause] = useState(false);
+  const [pause, setPause] = useState(false);
   const [resetTime, setResetTime] = useState(0);
   const countdownRef = useRef();
 
   let currentTime;
-  // let resetTime;
 
-  function setTimer(time){
-    setCount(time)
-  }
-
+  //HANDLE INPUT
   function getTime(e) {
     let time = e.target.value * 60000;
     setCount(time);
-    // resetTime = time;
     setResetTime(time);
-    // console.log(count);
-    console.log(resetTime);
   }
 
+  //START 
   function startTimer() {
+    if(play)
+      return;
     setPlay(true);
     countdownRef.current.api.start();
   }
 
-  function playPauseTimer() {
+  //PLAY/PAUSE
+  function pauseTimer() {
     if(!play){
       return;
     }
-    setPlayPause(prev => !prev)
-    // console.log(countdownRef);
-    if (playPause) {
+    setPause(prev => !prev)
+    if (pause) {
       countdownRef.current.api.start();
     }
     else {
       setCount(currentTime);
       countdownRef.current.api.pause();
     }
-    // console.log(playPause);
   }
 
-  async function resetTimer(){
-    if(!playPause)
-      playPauseTimer()
+  //RESET TIME
+  function resetTimer(){
+    setPlay(false);
+    setPause(false);   
+    countdownRef.current.api.pause();
     setCount(resetTime);
-    console.log(resetTime);
   }
 
-  function renderer({ total, hours, minutes, seconds }) {
+  //COUNTDOWN
+  function renderer({ total, days, hours, minutes, seconds }) {
     currentTime = total;
-    console.log(resetTime);
     return (
       <div className='time'>
-        {hours}:{minutes}:{seconds}
+        {days}:{hours}:{minutes}:{seconds}
       </div>
     )
   }
@@ -73,7 +69,7 @@ function App() {
           <Countdown
             ref={countdownRef}
             date={Date.now() + count}
-            autoStart={playPause} 
+            autoStart={pause} 
             renderer={renderer}
           />
         </div>
@@ -82,7 +78,7 @@ function App() {
           <svg onClick={startTimer} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="playbtn">
             <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
           </svg>
-          <svg onClick={playPauseTimer} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="playbtn">
+          <svg onClick={pauseTimer} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="playbtn">
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5V18M15 7.5V18M3 16.811V8.69c0-.864.933-1.406 1.683-.977l7.108 4.061a1.125 1.125 0 010 1.954l-7.108 4.061A1.125 1.125 0 013 16.811z" />
           </svg>
           <svg onClick={resetTimer} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="playbtn">
