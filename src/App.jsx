@@ -49,11 +49,11 @@ function App() {
   }
 
   //COUNTDOWN
-  function renderer({ total, days, hours, minutes, seconds }) {
+  function renderer({ total, hours, minutes, seconds }) {
     currentTime = total;
     return (
       <div className='time'>
-        {days}:{hours}:{minutes}:{seconds}
+        {hours}:{minutes}:{seconds}
       </div>
     )
   }
